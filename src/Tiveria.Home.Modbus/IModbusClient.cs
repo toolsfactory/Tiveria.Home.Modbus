@@ -3,18 +3,19 @@
 
     public interface IModbusClient
     {
+        ReadBitfieldResponse ReadCoils(ushort startingAddress, ushort quantity);
+        ReadBitfieldResponse ReadDiscreteInputs(ushort startingAddress, ushort quantity);
+
         ReadRegistersResponse ReadHoldingRegisters(ushort startingAddress, ushort quantity);
         ReadRegistersResponse ReadInputRegisters(ushort startingAddress, ushort quantity);
 
-        void WriteMultipeRegisters(ushort startingAddress, short[] registerdata);
-        void WriteSingleRegister(ushort address, short registerdata);
-        
-        ReadBitfieldResponse ReadCoils(ushort startingAddress, ushort quantity);
         void WriteSingleCoil(ushort address, bool coildata);
+        void WriteSingleRegister(ushort address, short registerdata);
 
+        void WriteMultipleCoils(ushort address, bool[] coilsdata);
+        void WriteMultipeRegisters(ushort startingAddress, short[] registerdata);
         void MaskWriteRegister(ushort address, ushort andMask, ushort orMask);
 
-        //        ReadDiscreteInputsResponse ReadDiscreteInputs(ushort startingAddress, ushort quantity, byte unitIdentifier = 0x01);
+        ReadRegistersResponse ReadWriteMultipeRegisters(ushort writeStartAddress, short[] registerdata, ushort readStartAddress, ushort readQuantity);
     }
-
 }

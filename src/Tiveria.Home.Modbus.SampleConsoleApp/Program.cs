@@ -2,9 +2,40 @@
 using Tiveria.Home.Modbus;
 
 
-//var c2 = new ModbusTCPClient(logger: new Tiveria.Common.Logging.ConsoleLogger("ModbusTCPClient"));
-var c2 = new ModbusTCPClient();
+var c2 = new ModbusTCPClient(logger: new Tiveria.Common.Logging.ConsoleLogger("ModbusTCPClient"));
+//var c2 = new ModbusTCPClient();
+//c2.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse("192.168.2.157"), 502));
+c2.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 502));
+var val = c2.ReadHoldingRegistersAsFloat(0);
+Console.WriteLine(val);
+
+var data = BitConverter.GetBytes(val);
+Console.WriteLine(BitConverter.ToString(data));
+Console.WriteLine();
+var d2 = (byte[]) data.Clone();
+data[3] = 0;
+Console.WriteLine(BitConverter.ToString(data));
+Console.WriteLine(BitConverter.ToSingle(data));
+Console.WriteLine();
+data = (byte[])d2.Clone();
+data[2] = 255;
+Console.WriteLine(BitConverter.ToString(data));
+Console.WriteLine(BitConverter.ToSingle(data));
+Console.WriteLine();
+data = (byte[])d2.Clone();
+data[1] = 0;
+Console.WriteLine(BitConverter.ToString(data));
+Console.WriteLine(BitConverter.ToSingle(data));
+Console.WriteLine();
+data = (byte[])d2.Clone();
+data[0] = 0;
+Console.WriteLine(BitConverter.ToString(data));
+Console.WriteLine(BitConverter.ToSingle(data));
+
+c2.Disconnect();
+/*
 c2.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse("192.168.2.157"), 502));
+
 
 Console.WriteLine($"SystemId:         " + c2.ReadHoldingRegistersAsUInt(2));
 Console.WriteLine($"Serialno:         " + c2.ReadHoldingRegistersAsULong(4));

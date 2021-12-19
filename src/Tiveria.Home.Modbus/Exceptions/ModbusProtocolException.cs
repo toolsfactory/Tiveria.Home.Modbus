@@ -20,7 +20,7 @@
             (byte)ResponseExceptionCodes.IllegalProtocolId => Resources.ErrorMessages.Protocol_IllegalProtocolId,
             (byte)ResponseExceptionCodes.IllegalTransactionId => Resources.ErrorMessages.Protocol_IllegalTransactionId,
             (byte)ResponseExceptionCodes.IllegalUnitId => Resources.ErrorMessages.Protocol_IllegalUnitId,
-            _ => "Unknow Response Exception Code!!"
+            _ => $"Unknow Response Exception Code ({code})!!"
         };
     }
 }

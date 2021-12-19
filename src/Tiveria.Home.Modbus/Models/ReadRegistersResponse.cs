@@ -4,6 +4,7 @@
     {
         public ushort StartingAddress { get; init; }
         public ushort Quantity { get; init; }
+        public ushort TransactionId { get; init; }
         public Span<byte> Payload { get; init; }
     }
 }

@@ -22,7 +22,7 @@ namespace Tiveria.Home.Modbus
         public int ConnectTimeout { get; set; } = (int)TimeSpan.FromSeconds(1).TotalMilliseconds;
         public bool Connected => _tcpConnection.Connected;
         public byte UnitIdentifier { get; init; }
-        public long LastTransactionId => _transactionId - 1;
+        public ushort LastTransactionId => (ushort)(_transactionId - 1);
         #endregion
 
         #region Constructors & Finalizer
@@ -111,7 +111,7 @@ namespace Tiveria.Home.Modbus
                 () => WriteGenericSingleWriteRequestPDU(address, registerdata, FunctionCodes.WriteSingleCoil));
         }
 
-        public void WriteMultipleCoils(ushort address, bool[] coilsdata, byte unitIdentifier = 0x01)
+        public void WriteMultipleCoils(ushort address, bool[] coilsdata)
         {
             CheckQuantity(coilsdata.Length, 0x07B0); // 1968
             GenericWriteFunction(
@@ -154,10 +154,10 @@ namespace Tiveria.Home.Modbus
             SendRequest();
             var received = ReceiveResponse();
             //TODO: bytecount ignored for the moment - it is the first byte in received
-            return new ReadRegistersResponse() { StartingAddress = startingAddress, Quantity = quantity, Payload = received.Slice(1) };
+            return new ReadRegistersResponse() { StartingAddress = startingAddress, Quantity = quantity, TransactionId = LastTransactionId, Payload = received.Slice(1) };
         }
 
-        private  ReadBitfieldResponse GenericReadBitField(ushort startingAddress, ushort quantity, FunctionCodes functionCode)
+        private ReadBitfieldResponse GenericReadBitField(ushort startingAddress, ushort quantity, FunctionCodes functionCode)
         {
             CheckQuantity(quantity, 0x07D0); // 2000 
             BuidRequest(
@@ -206,7 +206,7 @@ namespace Tiveria.Home.Modbus
                 {
                     headerParsed = true;
                     ushort payloadLength = ReadAndVerifyMBAPHeader();
-                    if (readTotal - 6 >= payloadLength)
+                    if (readTotal - 6 >= payloadLength) // At the moment we ignore if more data is received than expected
                     {
                         break;
                     }
